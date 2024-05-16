@@ -1,0 +1,96 @@
+﻿@model RegistroDiarioViewModel
+@{
+    ViewData["Title"] = "Insertar";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container">
+    <h1>Insertar</h1>
+    <form method="post" asp-action="Insertar">
+        <div class="row">
+            <div class="danger">
+                @if (TempData["mensaje"] != null)
+                {
+                    <div class="alert alert-warning alert-dismissible" role="alert">
+                        <p>@TempData["mensaje"]</p>
+                        <button type="button" class="close" data-dismiss="alert" aria-label="close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                }
+            </div>
+        </div>
+        <div class="form-group">
+            <label asp-for="Taxi" class="control-label">Taxi:</label>
+            @Html.DropDownList("TaxiId", Model.Taxis, "Seleccione el Taxi", new {@class = "form-control"})
+        </div>
+        <div class="form-group">
+            <label asp-for="TotalDia" class="control-label">Total día:</label>
+            <input asp-for="TotalDia" class="form-control" onchange="Calcular();" />
+            <span asp-validation-for="TotalDia" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="Combustible" class="control-label">Combustible:</label>
+            <input asp-for="Combustible" class="form-control" onchange="Calcular();" />
+            <span asp-validation-for="Combustible" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="Gastos" class="control-label">Gastos:</label>
+            <input asp-for="Gastos" class="form-control" onchange="Calcular();" />
+            <span asp-validation-for="Gastos" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="Observacion" class="control-label">Observación:</label>
+            <input asp-for="Observacion" class="form-control" />
+            <span asp-validation-for="Observacion" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="PagoBase" class="control-label">Pago Base:</label>
+            <input asp-for="PagoBase" class="form-control" readonly/>
+            <span asp-validation-for="PagoBase" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="PagoConductor" class="control-label">Pago Conductor:</label>
+            <input asp-for="PagoConductor" class="form-control" readonly />
+            <span asp-validation-for="PagoConductor" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="PagoDueño" class="control-label">Pago Dueño:</label>
+            <input asp-for="PagoDueño" class="form-control" readonly/>
+            <span asp-validation-for="PagoDueño" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="Fecha" class="control-label">Fecha:</label>
+            <input asp-for="Fecha" class="form-control" />
+            <span asp-validation-for="Fecha" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <input type="submit" value="Insertar" class="btn-success" />
+        </div>
+    </form>
+</div>
+
+@section scripts
+{
+    <script>
+        function Calcular(dato){
+            
+            var TotalDia = parseFloat(document.getElementById("TotalDia").value);
+            var Combustible = parseFloat(document.getElementById("Combustible").value);
+
+            var Gastos = parseFloat(document.getElementById("Gastos").value);
+            var PagoBase = TotalDia * 0.10;
+            document.getElementById("PagoBase").value = PagoBase.toFixed(0);
+            var totalMenosGastos = TotalDia - PagoBase - Combustible;
+
+            var PagoConductor = totalMenosGastos * 0.55;
+
+            document.getElementById("PagoConductor").value = PagoConductor.toFixed(0);
+
+            var PagoDueño = totalMenosGastos - PagoConductor - Gastos;
+
+            document.getElementById("PagoDue_o").value = PagoDueño.toFixed(0);
+        }
+    </script>
+}
+
